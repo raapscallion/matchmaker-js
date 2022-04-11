@@ -1,15 +1,170 @@
 <!DOCTYPE html>
-<html>
-<head>
-<title>Node on Azure</title>
-</head>
-<body>
-<h1>Node.js and Express Hosted on Microsoft Azure Template</h1>
-<p>This repository serves as a template that can be used to create a Node.js and Express based website that can easily
-be hosted on Microsoft Azure.</p>
+<html lang="en">
 
-Additional application functionality includes:<br />
-<a href="fetching-from-server.html">Accessing Node.js Server-Side Application Programming Interfaces (APIs)</a><br />
-<a href="fetching-remote-dog-breeds.html">Accessing Remote Application Programming Interfaces (APIs)</a>
+<head>
+    <meta charset="UTF-8">
+    <title>Matchmaker Lite</title>
+</head>
+
+<body>
+    <h1> Matchmaker Lite</h1>
+    <p>Instructions...</p>
+    
+    <label>Chevy is the best car brand!</label><br />
+    <select id="q1">
+        <option value="5">Strongly Agree</option>
+        <option value="4">Agree</option>
+        <option value="3">Neither agree or disagree</option>
+        <option value="2">Disagree</option>
+        <option value="1">Strongly Disagree</option>
+    </select>
+    <br /><br />
+
+    <label>Spending time outdoors is a good way to unwind.</label><br />
+    <select id="q2">
+        <option value="5">Strongly Agree</option>
+        <option value="4">Agree</option>
+        <option value="3">Neither agree or disagree</option>
+        <option value="2">Disagree</option>
+        <option value="1">Strongly Disagree</option>
+    </select>
+    <br /><br />
+
+    <label>Olive garden is a nice restaurant for a date.</label><br />
+    <select id="q3">
+        <option value="5">Strongly Agree</option>
+        <option value="4">Agree</option>
+        <option value="3">Neither agree or disagree</option>
+        <option value="2">Disagree</option>
+        <option value="1">Strongly Disagree</option>
+    </select>
+    <br /><br />
+
+    <label>Pugs are the best dog breed.</label><br />
+    <select id="q4">
+        <option value="5">Strongly Agree</option>
+        <option value="4">Agree</option>
+        <option value="3">Neither agree or disagree</option>
+        <option value="2">Disagree</option>
+        <option value="1">Strongly Disagree</option>
+    </select>
+    <br /><br />
+
+    <label>Tea and espresso are best had without any sugar or cream.</label><br />
+    <select id="q5">
+        <option value="5">Strongly Agree</option>
+        <option value="4">Agree</option>
+        <option value="3">Neither agree or disagree</option>
+        <option value="2">Disagree</option>
+        <option value="1">Strongly Disagree</option>
+    </select>
+    <br /><br /><br />
+
+    <button onclick="calculate_compatability()">Calculate Compatability</button>
+    <p id="q1compat_output"></p>
+    <p id="q2compat_output"></p>
+    <p id="q3compat_output"></p>
+    <p id="q4compat_output"></p>
+    <p id="q5compat_output"></p>
+    <p id="compatibility"></p>
+    <p id="weighted_compat"></p>
+    <p id="compatibility_range"></p>
+
+
+<script>
+console.log("Starting Matchmaker Lite...");
+
+function calculate_compatability() {
+    console.log("calculate_compatibility()");
+
+    const DESIRED_RESPONSE = [
+        5, /* strongly agree */
+        4, /* agree */
+        3, /* neither agree or disagree */
+        1, /* strongly disagree */
+        5, /* strongly agree */
+    ];
+
+    const QUESTION_WEIGHT = [
+	3,
+	1,
+	1,
+	2,
+	3
+    ];
+    const MAX_SCORE = 15;
+    const MAX_WEIGHTED_SCORE = 50;
+
+    let question1_response = document.getElementById("q1").selectedOptions[0].value;
+    let question2_response = document.getElementById("q2").selectedOptions[0].value;
+    let question3_response = document.getElementById("q3").selectedOptions[0].value;
+    let question4_response = document.getElementById("q4").selectedOptions[0].value;
+    let question5_response = document.getElementById("q5").selectedOptions[0].value;
+
+    // Calculate compatibility scores
+    let question1_compatibility = 5 - Math.abs(question1_response - DESIRED_RESPONSE[0]);
+    let question2_compatibility = 4 - Math.abs(question2_response - DESIRED_RESPONSE[1]);
+    let question3_compatibility = 3 - Math.abs(question3_response - DESIRED_RESPONSE[2]);
+    let question4_compatibility = 1 - Math.abs(question4_response - DESIRED_RESPONSE[3]);
+    let question5_compatibility = 5 - Math.abs(question5_response - DESIRED_RESPONSE[4]);
+
+    console.log("compat1=5"+question1_compatibility);
+    console.log("compat2=4"+question2_compatibility);
+    console.log("compat3=3"+question3_compatibility);
+    console.log("compat4=1"+question4_compatibility);
+    console.log("compat5=5"+question5_compatibility);
+
+    // Calculate the weighted compatibility
+    let question1_weighted_compat = question1_compatibility * QUESTION_WEIGHT[0];
+    console.log("q1 weighted compat"+question1_weighted_compat);
+    let question2_weighted_compat = question2_compatibility * QUESTION_WEIGHT[1];
+    let question3_weighted_compat = question3_compatibility * QUESTION_WEIGHT[2];
+    let question4_weighted_compat = question4_compatibility * QUESTION_WEIGHT[3];
+    let question5_weighted_compat = question5_compatibility * QUESTION_WEIGHT[4];
+
+    //Calculate total compat and weighted total
+    let total_compatibility = question1_compatibility + question2_compatibility + question3_compatibility + question4_compatibility + question5_compatibility;
+    let total_weighted_compat = question1_weighted_compat + question2_weighted_compat + question3_weighted_compat + question4_weighted_compat + question5_weighted_compat
+
+    // Convert total compat to a %
+    total_compatibility *= 100 / MAX_SCORE;
+    total_compatibility = Math.round(total_compatibility);
+    console.log("total compat="+total_compatibility);
+    total_weighted_compat *= 100 / MAX_WEIGHTED_SCORE;
+    total_weighted_compat = Math.round(total_weighted_compat);
+
+    document.getElementById("q1compat_output").innerHTML = "Your compatibility on question 1 is:" + question1_compatibility + "     " +"Weighted compatibility is:" + question1_weighted_compat;
+    document.getElementById("q2compat_output").innerHTML = "Your compatibility on question 2 is:" + question2_compatibility + "     " +"Weighted compatibility is:" + question2_weighted_compat;
+    document.getElementById("q3compat_output").innerHTML = "Your compatibility on question 3 is:" + question3_compatibility + "     " +"Weighted compatibility is:" + question3_weighted_compat;
+    document.getElementById("q4compat_output").innerHTML = "Your compatibility on question 4 is:" + question4_compatibility + "     " +"Weighted compatibility is:" + question4_weighted_compat;
+    document.getElementById("q5compat_output").innerHTML = "Your compatibility on question 5 is:" + question5_compatibility + "     " +"Weighted compatibility is:" + question5_weighted_compat;
+    document.getElementById("compatibility").innerHTML = "Your total compatibility is:" + total_compatibility;
+    document.getElementById("weighted_compat").innerHTML = "Your total weighted compatibility is:" + total_weighted_compat;
+    
+
+    if (total_compatibility>89) {
+        document.getElementById("compatibility_range").innerHTML = "Wow we must be soulmates!"
+    }
+    if (total_compatibility>79) {
+        document.getElementById("compatibility_range").innerHTML = "Lets try going on a date!"
+    }
+    if (total_compatibility>69) {
+        document.getElementById("compatibility_range").innerHTML = "You seem nice but maybe not for me."
+    }
+    if (total_compatibility<69) {
+        document.getElementById("compatibility_range").innerHTML = "Not even close bud."
+    }
+}
+</script>
+
+
+
+
+
+
+    
+
 </body>
+
+
 </html>
